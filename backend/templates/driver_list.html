@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Drivers | NexusFleet{% endblock %}
+{% block page_title %}Drivers{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search drivers...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+      <option value="on_trip" {% if status_filter == 'on_trip' %}selected{% endif %}>On Trip</option>
+      <option value="off_duty" {% if status_filter == 'off_duty' %}selected{% endif %}>Off Duty</option>
+      <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/drivers/create/" class="btn btn-primary">+ New Driver</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>License Number</th><th>Phone</th><th>Email</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/drivers/{{ r.pk }}/edit/"><strong>{{ r.name }}</strong></a></td>
+        <td>{{ r.license_number|default:"-" }}</td>
+        <td>{{ r.phone|default:"-" }}</td>
+        <td style="color:var(--muted)">{{ r.email|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/drivers/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/drivers/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No drivers found.</p>
+    <a href="/drivers/create/" class="btn btn-primary" style="margin-top:1rem">Create Driver</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
