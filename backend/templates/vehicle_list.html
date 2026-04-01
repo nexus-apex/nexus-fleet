@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Vehicles | NexusFleet{% endblock %}
+{% block page_title %}Vehicles{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search vehicles...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Vehicle Type</option>
+      <option value="car" {% if status_filter == 'car' %}selected{% endif %}>Car</option>
+      <option value="van" {% if status_filter == 'van' %}selected{% endif %}>Van</option>
+      <option value="truck" {% if status_filter == 'truck' %}selected{% endif %}>Truck</option>
+      <option value="bus" {% if status_filter == 'bus' %}selected{% endif %}>Bus</option>
+      <option value="bike" {% if status_filter == 'bike' %}selected{% endif %}>Bike</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/vehicles/create/" class="btn btn-primary">+ New Vehicle</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Registration</th><th>Vehicle Type</th><th>Make</th><th>Model</th><th>Year</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/vehicles/{{ r.pk }}/edit/"><strong>{{ r.registration }}</strong></a></td>
+        <td><span class="badge badge-blue">{{ r.get_vehicle_type_display }}</span></td>
+        <td>{{ r.make|default:"-" }}</td>
+        <td>{{ r.model|default:"-" }}</td>
+        <td>{{ r.year|default:"-" }}</td>
+        <td class="actions">
+          <a href="/vehicles/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/vehicles/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No vehicles found.</p>
+    <a href="/vehicles/create/" class="btn btn-primary" style="margin-top:1rem">Create Vehicle</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
