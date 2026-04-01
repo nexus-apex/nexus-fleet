@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Vehicle | NexusFleet{% endblock %}
+{% block page_title %}{% if editing %}Edit Vehicle{% else %}New Vehicle{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Registration</label>
+        <input type="text" name="registration" value="{{ record.registration|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Vehicle Type</label>
+        <select name="vehicle_type">
+          <option value="car" {% if record.vehicle_type == 'car' %}selected{% endif %}>Car</option>
+          <option value="van" {% if record.vehicle_type == 'van' %}selected{% endif %}>Van</option>
+          <option value="truck" {% if record.vehicle_type == 'truck' %}selected{% endif %}>Truck</option>
+          <option value="bus" {% if record.vehicle_type == 'bus' %}selected{% endif %}>Bus</option>
+          <option value="bike" {% if record.vehicle_type == 'bike' %}selected{% endif %}>Bike</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Make</label>
+        <input type="text" name="make" value="{{ record.make|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Model</label>
+        <input type="text" name="model" value="{{ record.model|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Year</label>
+        <input type="number" name="year" value="{{ record.year|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="maintenance" {% if record.status == 'maintenance' %}selected{% endif %}>Maintenance</option>
+          <option value="retired" {% if record.status == 'retired' %}selected{% endif %}>Retired</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Mileage</label>
+        <input type="number" name="mileage" value="{{ record.mileage|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Fuel Type</label>
+        <select name="fuel_type">
+          <option value="petrol" {% if record.fuel_type == 'petrol' %}selected{% endif %}>Petrol</option>
+          <option value="diesel" {% if record.fuel_type == 'diesel' %}selected{% endif %}>Diesel</option>
+          <option value="electric" {% if record.fuel_type == 'electric' %}selected{% endif %}>Electric</option>
+          <option value="cng" {% if record.fuel_type == 'cng' %}selected{% endif %}>CNG</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Vehicle</button>
+      <a href="/vehicles/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
